@@ -12,8 +12,8 @@ const generateImage = async (prompt: string): Promise<Experimental_GenerateImage
 
   try {
     return response;
-  } catch (arweaveError) {
-    console.error("Error generating image:", arweaveError);
+  } catch (error) {
+    console.error("Error generating image:", error);
   }
 };
 
