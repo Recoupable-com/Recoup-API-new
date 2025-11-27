@@ -1,51 +1,37 @@
-import Link from 'next/link';
-import WordmarkCondensed from './assets/x402_wordmark_light.svg';
+import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 text-gray-900 flex flex-col">
-      <div className="flex-grow">
-        {/* Hero Section */}
-        <section className="max-w-6xl mx-auto px-4 py-20 lg:py-28">
-          <div className="text-center">
-            <div className="w-64 mb-6 mx-auto">
-              <WordmarkCondensed className="mx-auto" />
-            </div>
-            <p className="text-xl text-gray-600 mb-8 font-mono">
-              Fullstack demo powered by Next.js
-            </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link
-                href="/protected"
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-mono transition-colors text-white"
-              >
-                Live demo
-              </Link>
-            </div>
-          </div>
-        </section>
-      </div>
-      <footer className="py-8 text-center text-sm text-gray-500">
-        By using this site, you agree to be bound by the{' '}
-        <a
-          href="https://www.coinbase.com/legal/developer-platform/terms-of-service"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500"
-        >
-          CDP Terms of Service
-        </a>{' '}
-        and{' '}
-        <a
-          href="https://www.coinbase.com/legal/privacy"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500"
-        >
-          Global Privacy Policy
-        </a>
-        .
-      </footer>
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <Image
+          src="/images/recoup_logo.png"
+          alt="Recoup logo"
+          width={120}
+          height={120}
+          priority
+          className="mb-8"
+        />
+        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
+          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+            Recoup API
+          </h1>
+          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
+            Welcome to the Recoup API. For detailed documentation, API reference, and integration
+            guides, visit our documentation site.
+          </p>
+        </div>
+        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+          <a
+            className="flex h-12 w-full items-center justify-center rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[200px]"
+            href="https://docs.recoupable.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View Documentation
+          </a>
+        </div>
+      </main>
     </div>
   );
 }
