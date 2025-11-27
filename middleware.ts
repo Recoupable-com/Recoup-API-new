@@ -19,6 +19,18 @@ export const middleware = paymentMiddleware(
         },
       },
     },
+    "/api/image/generate": {
+      price: "$0.001",
+      network: "base",
+      config: {
+        discoverable: true, // make endpoint discoverable
+        description: "Access to protected content",
+        outputSchema: {
+          type: "text/html",
+          description: "Exclusive music content",
+        },
+      },
+    },
   },
   facilitator,
   {
