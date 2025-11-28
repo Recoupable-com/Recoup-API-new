@@ -3,6 +3,12 @@ import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
 import { wrapFetchWithPayment, decodeXPaymentResponse } from "x402-fetch";
 import { toAccount } from "viem/accounts";
 import { getAccount } from "@/lib/coinbase/getAccount";
+import { z } from "zod";
+
+const queryParamsSchema = z.object({
+  prompt: z.string().min(1, "The provided prompt is invalid or empty"),
+  artist_account_id: z.string().min(1, "The provided artist_account_id is invalid or not found"),
+});
 
 /**
  * OPTIONS handler for CORS preflight requests.
@@ -26,16 +32,21 @@ export async function OPTIONS() {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const prompt = searchParams.get("prompt");
-    const artistAccountId = searchParams.get("artist_account_id");
+    const params = Object.fromEntries(searchParams.entries());
 
-    if (!prompt) {
+    // Validate query parameters with Zod
+    const validationResult = queryParamsSchema.safeParse(params);
+    if (!validationResult.success) {
+      const firstError = validationResult.error.issues[0];
+      const errorCode = firstError.path[0] === "prompt" ? "invalid_prompt" : "invalid_account";
+
       return NextResponse.json(
         {
           status: "error",
           error: {
-            code: "invalid_prompt",
-            message: "The provided prompt is invalid or empty",
+            code: errorCode,
+            path: firstError.path,
+            message: firstError.message,
           },
         },
         {
@@ -45,21 +56,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (!artistAccountId) {
-      return NextResponse.json(
-        {
-          status: "error",
-          error: {
-            code: "invalid_artist",
-            message: "The provided artist_account_id is invalid or not found",
-          },
-        },
-        {
-          status: 400,
-          headers: getCorsHeaders(),
-        },
-      );
-    }
+    const { prompt } = validationResult.data;
 
     // Create smart wallet for x402 payments
     const account = await getAccount("0x7AfB9872Ea382B7Eb01c67B6884dD99A744eA64f");
