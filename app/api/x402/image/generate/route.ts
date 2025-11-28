@@ -38,10 +38,6 @@ export async function GET(request: NextRequest) {
     }
 
     const result = await generateImage(prompt);
-    const arweaveResult = await uploadToArweave({
-      base64Data: result.images[0].base64,
-      mimeType: result.images[0].mediaType,
-    });
 
     if (!result) {
       return NextResponse.json(
@@ -52,6 +48,10 @@ export async function GET(request: NextRequest) {
         },
       );
     }
+    const arweaveResult = await uploadToArweave({
+      base64Data: result.images[0].base64,
+      mimeType: result.images[0].mediaType,
+    });
 
     return NextResponse.json(
       { ...result, imageUrl: getFetchableUrl(`ar://${arweaveResult.id}`), arweaveResult },
