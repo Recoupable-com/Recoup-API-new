@@ -8,6 +8,10 @@ import { isIPFSUrl } from "./isIPFSUrl";
  * @returns True if the URL is a normalizeable IPFS URL, false otherwise.
  */
 export function isNormalizeableIPFSUrl(url: string | null | undefined): boolean {
-  return url ? isIPFSUrl(url) || isCID(url) : false;
-}
+  if (!url || typeof url !== "string") return false;
 
+  // Handle minor formatting noise: whitespace and wrapped quotes
+  const cleaned = url.trim().replace(/^["']|["']$/g, "");
+
+  return isIPFSUrl(cleaned) || isCID(cleaned);
+}
