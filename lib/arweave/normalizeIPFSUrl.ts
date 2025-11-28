@@ -14,8 +14,13 @@ export type IPFSUrl = `ipfs://${string}`;
 export function normalizeIPFSUrl(url: string | null | undefined): IPFSUrl | null {
   if (!url || typeof url !== "string") return null;
 
-  // Handle urls wrapped in quotes
-  url = url.replace(/"/g, "");
+  // Handle minor formatting noise: whitespace and wrapped quotes
+  url = url.trim().replace(/^["']|["']$/g, "");
+
+  // Normalize protocol-relative URLs before checks
+  if (url.startsWith("//")) {
+    url = url.replace(/^\/\//, "http://");
+  }
 
   // Check if already a normalized IPFS url
   if (isNormalizedIPFSURL(url)) return url as IPFSUrl;
@@ -28,8 +33,8 @@ export function normalizeIPFSUrl(url: string | null | undefined): IPFSUrl | null
 
   // If url is already a gateway url, parse and normalize
   if (isGatewayIPFSUrl(url)) {
-    // Replace leading double-slashes and parse URL
-    const parsed = new URL(url.replace(/^\/\//, "http://"));
+    // Parse URL (protocol-relative URLs already normalized above)
+    const parsed = new URL(url);
     // Remove IPFS from the URL
     // http://gateway/ipfs/<CID>?x=y#z -> http://gateway/<CID>?x=y#z
     parsed.pathname = parsed.pathname.replace(/^\/ipfs\//, "");
@@ -42,4 +47,3 @@ export function normalizeIPFSUrl(url: string | null | undefined): IPFSUrl | null
 
   return null;
 }
-
