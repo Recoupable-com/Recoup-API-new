@@ -4,7 +4,7 @@ import type { Address } from "viem";
 import { IMAGE_GENERATE_PRICE } from "@/lib/const";
 
 /**
- * Loads an account, gets or creates a smart account, and sends 0.001 USDC to the specified address.
+ * Loads an account, gets or creates a smart account, and sends USDC to the specified address.
  *
  * @param recipientAddress - The address to send USDC to.
  * @returns Promise resolving to the transaction hash.
