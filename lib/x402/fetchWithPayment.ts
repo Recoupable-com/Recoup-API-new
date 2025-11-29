@@ -3,6 +3,8 @@ import { toAccount } from "viem/accounts";
 import { getAccount } from "@/lib/coinbase/getAccount";
 import { deductCredits } from "../credits/deductCredits";
 import { loadAccount } from "./loadAccount";
+import { getCreditsForPrice } from "./getCreditsForPrice";
+import { IMAGE_GENERATE_PRICE } from "@/lib/const";
 
 /**
  * Fetches a URL with x402 payment handling.
@@ -13,7 +15,8 @@ import { loadAccount } from "./loadAccount";
  */
 export async function fetchWithPayment(url: string, accountId: string): Promise<Response> {
   const account = await getAccount(accountId);
-  await deductCredits({ accountId, creditsToDeduct: 1 });
+  const creditsToDeduct = getCreditsForPrice(`$${IMAGE_GENERATE_PRICE}`);
+  await deductCredits({ accountId, creditsToDeduct });
   await loadAccount(account.address);
   const fetchWithPaymentWrapper = wrapFetchWithPayment(fetch, toAccount(account));
   return fetchWithPaymentWrapper(url, {
