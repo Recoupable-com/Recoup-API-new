@@ -24,7 +24,6 @@ export async function OPTIONS() {
  */
 export async function GET(request: NextRequest) {
   try {
-    console.log("starting image generation");
     const { searchParams } = new URL(request.url);
     const prompt = searchParams.get("prompt");
     const account = getBuyerAccount(request);
