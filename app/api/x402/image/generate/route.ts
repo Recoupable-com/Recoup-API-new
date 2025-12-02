@@ -3,6 +3,7 @@ import generateImage from "@/lib/ai/generateImage";
 import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
 import { uploadImageAndCreateMoment } from "@/lib/arweave/uploadImageAndCreateMoment";
 import { getBuyerAccount } from "@/lib/x402/getBuyerAccount";
+import { parseFilesFromQuery } from "@/lib/files/parseFilesFromQuery";
 
 /**
  * OPTIONS handler for CORS preflight requests.
@@ -26,6 +27,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const prompt = searchParams.get("prompt");
+    const filesParam = searchParams.get("files");
     const account = getBuyerAccount(request);
 
     if (!prompt) {
@@ -38,7 +40,24 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const { image, usage } = await generateImage(prompt);
+    // Parse files from query parameter if provided
+    let files;
+    try {
+      files = parseFilesFromQuery(filesParam);
+    } catch (error) {
+      return NextResponse.json(
+        {
+          error: "Invalid files parameter.",
+          details: error instanceof Error ? error.message : "Format must be: url1:type1|url2:type2",
+        },
+        {
+          status: 400,
+          headers: getCorsHeaders(),
+        },
+      );
+    }
+
+    const { image, usage } = await generateImage(prompt, files);
 
     if (!image) {
       return NextResponse.json(
