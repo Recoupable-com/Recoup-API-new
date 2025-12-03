@@ -1,5 +1,18 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
 import { getArtistSocialsHandler } from "@/lib/artist/getArtistSocialsHandler";
+
+/**
+ * OPTIONS handler for CORS preflight requests.
+ *
+ * @returns A NextResponse with CORS headers.
+ */
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: getCorsHeaders(),
+  });
+}
 
 /**
  * GET /api/artist/socials
