@@ -10,7 +10,7 @@ if (!redisUrl) {
 const url = new URL(redisUrl as string);
 const redisConfig = {
   host: url.hostname,
-  port: parseInt(url.port),
+  port: parseInt(url.port, 10),
   password: url.password,
   lazyConnect: true,
   retryDelayOnFailover: 100,
