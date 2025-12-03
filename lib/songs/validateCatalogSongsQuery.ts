@@ -39,6 +39,7 @@ export function validateCatalogSongsQuery(
     return NextResponse.json(
       {
         status: "error",
+        missing_fields: firstError.path,
         error: firstError.message,
       },
       {
