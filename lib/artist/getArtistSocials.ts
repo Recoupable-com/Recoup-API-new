@@ -2,14 +2,14 @@ import { selectAccountSocialsCount } from "@/lib/supabase/account_socials/select
 import { selectAccountSocials } from "@/lib/supabase/account_socials/selectAccountSocials";
 import {
   flattenAccountSocials,
-  type ArtistSocialResponse,
+  type AccountSocialResponse,
 } from "@/lib/account/flattenAccountSocials";
 import type { ArtistSocialsQuery } from "@/lib/artist/validateArtistSocialsQuery";
 
 export interface GetArtistSocialsResponse {
   status: "success" | "error";
   message?: string;
-  socials: ArtistSocialResponse[];
+  socials: AccountSocialResponse[];
   pagination: {
     total_count: number;
     page: number;
@@ -29,11 +29,6 @@ export const getArtistSocials = async (
 ): Promise<GetArtistSocialsResponse> => {
   try {
     const { artist_account_id, page, limit } = params;
-
-    // Validate parameters
-    if (!artist_account_id) {
-      throw new Error("artist_account_id is required");
-    }
 
     // Ensure limit is within reasonable bounds
     const validatedLimit = Math.min(Math.max(1, limit), 100);
