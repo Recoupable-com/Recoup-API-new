@@ -20,7 +20,7 @@ const startFacebookProfileScraping = async (handle: string): Promise<ApifyRunInf
   });
 
   if (!run?.id || !run?.defaultDatasetId) {
-    console.error("Failed to start Instagram profile scraping for handle:", handle);
+    console.error("Failed to start Facebook profile scraping for handle:", handle);
     return null;
   }
 
