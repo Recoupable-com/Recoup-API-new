@@ -2,6 +2,9 @@ import { Redis } from "ioredis";
 
 // Verify environment is loaded
 const redisUrl = process.env.REDIS_URL;
+if (!redisUrl) {
+  throw new Error("REDIS_URL is not set");
+}
 
 // Parse Redis URL manually to ensure proper connection
 const url = new URL(redisUrl as string);
