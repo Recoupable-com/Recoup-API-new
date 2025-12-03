@@ -1,17 +1,11 @@
 import { selectArtistSegmentsCount } from "@/lib/supabase/artist_segments/selectArtistSegmentsCount";
 import { selectArtistSegments } from "@/lib/supabase/artist_segments/selectArtistSegments";
 import type { ArtistSegmentsQuery } from "@/lib/artist/validateArtistSegmentsQuery";
+import { mapArtistSegments, type MappedArtistSegment } from "@/lib/artist/mapArtistSegments";
 
 interface GetArtistSegmentsResponse {
   status: "success" | "error";
-  segments: {
-    id: string;
-    artist_account_id: string;
-    segment_id: string;
-    updated_at: string;
-    segment_name: string;
-    artist_name: string;
-  }[];
+  segments: MappedArtistSegment[];
   pagination: {
     total_count: number;
     page: number;
@@ -29,7 +23,6 @@ export const getArtistSegments = async ({
   try {
     const offset = (page - 1) * limit;
 
-    // Get total count first
     const total_count = await selectArtistSegmentsCount(artist_account_id);
 
     if (total_count === 0) {
@@ -45,7 +38,6 @@ export const getArtistSegments = async ({
       };
     }
 
-    // Get paginated segments with joins
     const data = await selectArtistSegments(artist_account_id, offset, limit);
 
     if (!data) {
@@ -61,14 +53,7 @@ export const getArtistSegments = async ({
       };
     }
 
-    const formattedSegments = data.map(segment => ({
-      id: segment.id,
-      artist_account_id: segment.artist_account_id,
-      segment_id: segment.segment_id,
-      updated_at: segment.updated_at || new Date().toISOString(),
-      segment_name: segment.segments?.name || "Unknown Segment",
-      artist_name: segment.accounts?.name || "Unknown Artist",
-    }));
+    const formattedSegments = mapArtistSegments(data);
 
     const total_pages = Math.ceil(total_count / limit);
 
