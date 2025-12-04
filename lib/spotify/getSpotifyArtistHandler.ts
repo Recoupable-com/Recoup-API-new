@@ -27,7 +27,7 @@ export async function getSpotifyArtistHandler(request: NextRequest): Promise<Nex
     if (!tokenResult || tokenResult.error || !tokenResult.access_token) {
       return NextResponse.json(
         {
-          artist: null,
+          status: "error",
           error: "Failed to generate access token",
         },
         {
@@ -42,7 +42,7 @@ export async function getSpotifyArtistHandler(request: NextRequest): Promise<Nex
     if (error) {
       return NextResponse.json(
         {
-          artist: null,
+          status: "error",
           error: error instanceof Error ? error.message : String(error),
         },
         {
