@@ -70,10 +70,10 @@ export async function postSocialScrapeHandler(request: NextRequest): Promise<Nex
       {
         runId: null,
         datasetId: null,
-        error: "Scrape trigger not yet implemented",
+        error: "Unsupported social media platform",
       },
       {
-        status: 200,
+        status: 400,
         headers: getCorsHeaders(),
       },
     );
