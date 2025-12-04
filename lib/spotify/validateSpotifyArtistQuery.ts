@@ -25,7 +25,8 @@ export function validateSpotifyArtistQuery(
     const firstError = validationResult.error.issues[0];
     return NextResponse.json(
       {
-        artist: null,
+        status: "error",
+        missing_fields: firstError.path,
         error: firstError.message,
       },
       {
