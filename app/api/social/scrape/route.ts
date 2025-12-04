@@ -15,8 +15,6 @@ export async function OPTIONS() {
 }
 
 /**
- * POST /api/socials/scrape
- *
  * Scrapes a single social media profile by social_id.
  *
  * Body parameters:
