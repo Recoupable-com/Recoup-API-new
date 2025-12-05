@@ -49,6 +49,7 @@ export async function GET(request: NextRequest) {
  * - schedule (required): The cron schedule string
  * - account_id (required): The account ID
  * - artist_account_id (required): The artist account ID
+ * - model (optional): The model to use for the task
  *
  * @param request - The request object containing the task data in the body.
  * @returns A NextResponse with the created task.
@@ -73,6 +74,7 @@ export async function POST(request: NextRequest) {
  * - account_id (optional): The account ID
  * - artist_account_id (optional): The artist account ID
  * - enabled (optional): Whether the task is enabled
+ * - model (optional): The model to use for the task
  *
  * @param request - The request object containing the task data in the body.
  * @returns A NextResponse with the updated task.

@@ -8,6 +8,7 @@ export const createTaskBodySchema = z.object({
   schedule: z.string().min(1, "schedule body parameter is required"),
   account_id: z.string().min(1, "account_id body parameter is required"),
   artist_account_id: z.string().min(1, "artist_account_id body parameter is required"),
+  model: z.string().optional(),
 });
 
 export type CreateTaskBody = z.infer<typeof createTaskBodySchema>;

@@ -10,6 +10,7 @@ export const updateTaskBodySchema = z.object({
   account_id: z.string().min(1).optional(),
   artist_account_id: z.string().min(1).optional(),
   enabled: z.boolean().optional(),
+  model: z.string().optional(),
 });
 
 export type UpdateTaskBody = z.infer<typeof updateTaskBodySchema>;
@@ -40,4 +41,3 @@ export function validateUpdateTaskBody(body: unknown): NextResponse | UpdateTask
 
   return validationResult.data;
 }
-

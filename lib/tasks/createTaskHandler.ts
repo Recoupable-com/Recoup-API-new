@@ -15,6 +15,7 @@ import { validateCreateTaskBody } from "@/lib/tasks/validateCreateTaskBody";
  * - schedule (required): The cron schedule string
  * - account_id (required): The account ID
  * - artist_account_id (required): The artist account ID
+ * - model (optional): The model to use for the task
  *
  * @param request - The request object containing the task data in the body.
  * @returns A NextResponse with the created task.
