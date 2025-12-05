@@ -3,6 +3,7 @@ import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
 import { getTasksHandler } from "@/lib/tasks/getTasksHandler";
 import { createTaskHandler } from "@/lib/tasks/createTaskHandler";
 import { updateTaskHandler } from "@/lib/tasks/updateTaskHandler";
+import { deleteTaskHandler } from "@/lib/tasks/deleteTaskHandler";
 
 /**
  * OPTIONS handler for CORS preflight requests.
@@ -78,4 +79,21 @@ export async function POST(request: NextRequest) {
  */
 export async function PATCH(request: NextRequest) {
   return updateTaskHandler(request);
+}
+
+/**
+ * DELETE /api/tasks
+ *
+ * Deletes an existing task (scheduled action) by its ID.
+ * Also deletes the corresponding Trigger.dev schedule if it exists.
+ * Returns only the status of the delete operation.
+ *
+ * Body parameters:
+ * - id (required): The task ID to delete
+ *
+ * @param request - The request object containing the task ID in the body.
+ * @returns A NextResponse with the delete operation status.
+ */
+export async function DELETE(request: NextRequest) {
+  return deleteTaskHandler(request);
 }
