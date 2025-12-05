@@ -20,6 +20,7 @@ import type { TablesUpdate } from "@/types/database.types";
  * - account_id (optional): The account ID
  * - artist_account_id (optional): The artist account ID
  * - enabled (optional): Whether the task is enabled
+ * - model (optional): The model to use for the task
  *
  * @param request - The request object containing the task data in the body.
  * @returns A NextResponse with the updated task.
@@ -33,7 +34,8 @@ export async function updateTaskHandler(request: NextRequest): Promise<NextRespo
       return validatedBody;
     }
 
-    const { id, title, prompt, schedule, account_id, artist_account_id, enabled } = validatedBody;
+    const { id, title, prompt, schedule, account_id, artist_account_id, enabled, model } =
+      validatedBody;
 
     const existingTasks = await selectScheduledActions({ id });
     const existingTask = existingTasks[0];
@@ -58,6 +60,7 @@ export async function updateTaskHandler(request: NextRequest): Promise<NextRespo
     if (account_id !== undefined) updateData.account_id = account_id;
     if (artist_account_id !== undefined) updateData.artist_account_id = artist_account_id;
     if (enabled !== undefined) updateData.enabled = enabled;
+    if (model !== undefined) updateData.model = model;
 
     const finalEnabled = enabled !== undefined ? enabled : (existingTask.enabled ?? true);
     const cronExpression = schedule ?? existingTask.schedule ?? undefined;
