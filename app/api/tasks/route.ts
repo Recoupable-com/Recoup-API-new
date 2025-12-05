@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
 import { getTasksHandler } from "@/lib/tasks/getTasksHandler";
+import { createTaskHandler } from "@/lib/tasks/createTaskHandler";
 
 /**
  * OPTIONS handler for CORS preflight requests.
@@ -19,8 +20,8 @@ export async function OPTIONS() {
  *
  * Retrieves tasks (scheduled actions) from the database.
  * Supports filtering by id, account_id, or artist_account_id.
- * If an `id` is provided, returns a single task matching that ID.
- * Otherwise, returns an array of all tasks (optionally filtered).
+ * Returns an array of tasks matching the provided filters.
+ * When filtering by `id`, the array will contain at most one task.
  *
  * Query parameters:
  * - id (optional): Filter by task ID
@@ -34,3 +35,22 @@ export async function GET(request: NextRequest) {
   return getTasksHandler(request);
 }
 
+/**
+ * POST /api/tasks
+ *
+ * Creates a new task (scheduled action).
+ * Returns the created task in an array, matching GET response shape.
+ *
+ * Body parameters:
+ * - title (required): The title of the task
+ * - prompt (required): The prompt for the task
+ * - schedule (required): The cron schedule string
+ * - account_id (required): The account ID
+ * - artist_account_id (required): The artist account ID
+ *
+ * @param request - The request object containing the task data in the body.
+ * @returns A NextResponse with the created task.
+ */
+export async function POST(request: NextRequest) {
+  return createTaskHandler(request);
+}
