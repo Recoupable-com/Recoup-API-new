@@ -1,8 +1,9 @@
 import { createPaidMcpHandler } from "x402-mcp";
-import { z } from "zod";
 import { facilitator } from "@coinbase/x402";
 import { SMART_ACCOUNT_ADDRESS } from "@/lib/const";
 import { registerGetRandomNumberTool } from "@/lib/mcp/registerGetRandomNumberTool";
+import { registerAddTool } from "@/lib/mcp/registerAddTool";
+import { registerHelloRemoteTool } from "@/lib/mcp/registerHelloRemoteTool";
 
 let handler: ReturnType<typeof createPaidMcpHandler> | null = null;
 
@@ -16,38 +17,12 @@ async function getHandler(): Promise<ReturnType<typeof createPaidMcpHandler>> {
     handler = createPaidMcpHandler(
       server => {
         registerGetRandomNumberTool(server);
-        server.registerTool(
-          "add",
-          {
-            inputSchema: {
-              // @ts-expect-error - Zod version mismatch with x402-mcp types
-              a: z.number().int(),
-              // @ts-expect-error - Zod version mismatch with x402-mcp types
-              b: z.number().int(),
-            },
-          },
-          async args => {
-            const result = args?.a + args?.b;
-            return { content: [{ type: "text", text: result?.toString() }] };
-          },
-        );
-        server.registerTool(
-          "hello-remote",
-          {
-            description: "Receive a greeting",
-            inputSchema: {
-              // @ts-expect-error - Zod version mismatch with x402-mcp types
-              name: z.string(),
-            },
-          },
-          async args => {
-            return { content: [{ type: "text" as const, text: `Hello ${args.name}` }] };
-          },
-        );
+        registerAddTool(server);
+        registerHelloRemoteTool(server);
       },
       {
         serverInfo: {
-          name: "test-mcp",
+          name: "recoup-mcp",
           version: "0.0.1",
         },
       },
