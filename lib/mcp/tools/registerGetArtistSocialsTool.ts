@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { getArtistSocials } from "@/lib/artist/getArtistSocials";
 import { ArtistSocialsQuery } from "@/lib/artist/validateArtistSocialsQuery";
+import { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 /**
  * Registers the "get_artist_socials" tool on the MCP server.
@@ -25,9 +26,7 @@ export function registerGetArtistSocialsTool(server: McpServer): void {
     },
     async (args: ArtistSocialsQuery) => {
       const result = await getArtistSocials(args);
-      return {
-        content: [{ type: "text", text: JSON.stringify(result) }],
-      };
+      return result as unknown as CallToolResult;
     },
   );
 }
