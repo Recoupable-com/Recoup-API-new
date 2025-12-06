@@ -2,6 +2,7 @@ import { createPaidMcpHandler } from "x402-mcp";
 import { z } from "zod";
 import { facilitator } from "@coinbase/x402";
 import { SMART_ACCOUNT_ADDRESS } from "@/lib/const";
+import { registerGetRandomNumberTool } from "@/lib/mcp/registerGetRandomNumberTool";
 
 let handler: ReturnType<typeof createPaidMcpHandler> | null = null;
 
@@ -14,23 +15,7 @@ async function getHandler(): Promise<ReturnType<typeof createPaidMcpHandler>> {
   if (!handler) {
     handler = createPaidMcpHandler(
       server => {
-        server.registerTool(
-          "get_random_number",
-          {
-            inputSchema: {
-              // @ts-expect-error - Zod version mismatch with x402-mcp types
-              min: z.number().int(),
-              // @ts-expect-error - Zod version mismatch with x402-mcp types
-              max: z.number().int(),
-            },
-          },
-          async args => {
-            const randomNumber = Math.floor(Math.random() * (args.max - args.min + 1)) + args.min;
-            return {
-              content: [{ type: "text", text: randomNumber.toString() }],
-            };
-          },
-        );
+        registerGetRandomNumberTool(server);
         server.registerTool(
           "add",
           {
