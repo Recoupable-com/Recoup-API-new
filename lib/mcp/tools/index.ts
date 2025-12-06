@@ -1,7 +1,5 @@
 import { PaymentMcpServer } from "x402-mcp";
-import { registerAddTool } from "./registerAddTool";
 import { registerGetRandomNumberTool } from "./registerGetRandomNumberTool";
-import { registerHelloRemoteTool } from "./registerHelloRemoteTool";
 import { registerGetArtistSocialsTool } from "./registerGetArtistSocialsTool";
 
 /**
@@ -12,7 +10,5 @@ import { registerGetArtistSocialsTool } from "./registerGetArtistSocialsTool";
  */
 export const registerAllTools = (server: PaymentMcpServer): void => {
   registerGetRandomNumberTool(server);
-  registerAddTool(server);
-  registerHelloRemoteTool(server);
   registerGetArtistSocialsTool(server);
 };
