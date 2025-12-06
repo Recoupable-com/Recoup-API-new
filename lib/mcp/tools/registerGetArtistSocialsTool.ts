@@ -1,8 +1,8 @@
 import { PaymentMcpServer } from "x402-mcp";
 import { z } from "zod";
-import type { RegisteredTool } from "@modelcontextprotocol/sdk/server/mcp";
 import { getArtistSocials } from "@/lib/artist/getArtistSocials";
 import { ArtistSocialsQuery } from "@/lib/artist/validateArtistSocialsQuery";
+import { ZodRawShapeCompat } from "@modelcontextprotocol/sdk/server/zod-compat.js";
 
 /**
  * Registers the "get_artist_socials" tool on the MCP server.
@@ -16,14 +16,14 @@ export function registerGetArtistSocialsTool(server: PaymentMcpServer): void {
     {
       description:
         "Retrieve all socials associated with an artist. This endpoint should be called before using the Social Posts endpoint to obtain the necessary social IDs.",
-      inputSchema: {
+      inputSchema: z.object({
         artist_account_id: z.string().min(1, "Artist account ID is required") as z.ZodType<string>,
         page: z.number().int().positive().optional().default(1) as z.ZodType<number | undefined>,
         limit: z.number().int().min(1).max(100).optional().default(20) as z.ZodType<
           number | undefined
         >,
-      },
-    } as RegisteredTool,
+      }) as ZodRawShapeCompat,
+    },
     async (args: ArtistSocialsQuery) => {
       const result = await getArtistSocials(args);
       return {
