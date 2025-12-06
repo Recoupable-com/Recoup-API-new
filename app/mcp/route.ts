@@ -1,7 +1,5 @@
-import { NextResponse } from "next/server";
 import { registerAllTools } from "@/lib/mcp/tools";
 import { createMcpHandler } from "mcp-handler";
-import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
 
 let handler: ReturnType<typeof createMcpHandler> | null = null;
 
@@ -25,18 +23,6 @@ async function getHandler(): Promise<ReturnType<typeof createMcpHandler>> {
     );
   }
   return handler;
-}
-
-/**
- * OPTIONS handler for CORS preflight requests.
- *
- * @returns A NextResponse with CORS headers.
- */
-export async function OPTIONS() {
-  return new NextResponse(null, {
-    status: 200,
-    headers: getCorsHeaders(),
-  });
 }
 
 /**
