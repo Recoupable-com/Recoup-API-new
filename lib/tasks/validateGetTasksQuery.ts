@@ -6,15 +6,11 @@ export const getTasksQuerySchema = z.object({
   account_id: z
     .string()
     .optional()
-    .describe(
-      "Optional: Filter tasks by the account ID of the user who created them. Get this from the system prompt. Do not ask for this.",
-    ),
+    .describe("Optional: Filter tasks by the account ID which created them."),
   artist_account_id: z
     .string()
     .optional()
-    .describe(
-      "Optional: Filter tasks by the artist account ID. If not provided, get the active artist id from the system prompt.",
-    ),
+    .describe("Optional: Filter tasks by the artist account ID."),
   enabled: z.boolean().optional().describe("Optional: Filter tasks by their enabled status"),
   id: z.string().optional().describe("Optional: Filter tasks by task ID"),
 });
