@@ -37,9 +37,9 @@ export async function POST(request: NextRequest) {
  * Deletes an API key record from account_api_keys.
  *
  * Body parameters:
- * - keyId (required): The ID of the API key to delete
+ * - id (required): The ID of the API key to delete
  *
- * @param request - The request object containing the body with keyId.
+ * @param request - The request object containing the body with id.
  * @returns A NextResponse with the delete operation status.
  */
 export async function DELETE(request: NextRequest) {

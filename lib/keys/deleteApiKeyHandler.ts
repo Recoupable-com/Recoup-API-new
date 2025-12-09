@@ -7,9 +7,9 @@ import { deleteApiKey } from "@/lib/supabase/account_api_keys/deleteApiKey";
  * Handler for deleting an API key.
  *
  * Body parameters:
- * - keyId (required): The ID of the API key to delete
+ * - id (required): The ID of the API key to delete
  *
- * @param request - The request object containing the body with keyId.
+ * @param request - The request object containing the body with id.
  * @returns A NextResponse with the delete operation status.
  */
 export async function deleteApiKeyHandler(request: NextRequest): Promise<NextResponse> {
@@ -21,7 +21,7 @@ export async function deleteApiKeyHandler(request: NextRequest): Promise<NextRes
       return validatedBody;
     }
 
-    const { error } = await deleteApiKey(validatedBody.keyId);
+    const { error } = await deleteApiKey(validatedBody.id);
 
     if (error) {
       console.error("Error deleting API key:", error);

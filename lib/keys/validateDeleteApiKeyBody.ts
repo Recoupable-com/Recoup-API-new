@@ -3,7 +3,7 @@ import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
 import { z } from "zod";
 
 export const deleteApiKeyBodySchema = z.object({
-  keyId: z.string().min(1, "keyId parameter is required"),
+  id: z.string().min(1, "id parameter is required"),
 });
 
 export type DeleteApiKeyBody = z.infer<typeof deleteApiKeyBodySchema>;
