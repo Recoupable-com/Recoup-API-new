@@ -1,27 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
-import { validateDeleteApiKeyQuery } from "@/lib/keys/validateDeleteApiKeyQuery";
+import { validateDeleteApiKeyBody } from "@/lib/keys/validateDeleteApiKeyBody";
 import { deleteApiKey } from "@/lib/supabase/account_api_keys/deleteApiKey";
 
 /**
  * Handler for deleting an API key.
  *
- * Query parameters:
+ * Body parameters:
  * - keyId (required): The ID of the API key to delete
  *
- * @param request - The request object containing query parameters.
+ * @param request - The request object containing the body with keyId.
  * @returns A NextResponse with the delete operation status.
  */
 export async function deleteApiKeyHandler(request: NextRequest): Promise<NextResponse> {
   try {
-    const { searchParams } = new URL(request.url);
+    const body = await request.json();
 
-    const validatedQuery = validateDeleteApiKeyQuery(searchParams);
-    if (validatedQuery instanceof NextResponse) {
-      return validatedQuery;
+    const validatedBody = validateDeleteApiKeyBody(body);
+    if (validatedBody instanceof NextResponse) {
+      return validatedBody;
     }
 
-    const { error } = await deleteApiKey(validatedQuery.keyId);
+    const { error } = await deleteApiKey(validatedBody.keyId);
 
     if (error) {
       console.error("Error deleting API key:", error);
