@@ -20,7 +20,7 @@ export async function OPTIONS() {
  * Retrieves artists with optional organization filtering.
  *
  * Query parameters:
- * - accountId (required): The user's account ID (UUID)
+ * - accountId (required): The account's ID (UUID)
  * - orgId (optional): Filter to artists in a specific organization (UUID)
  * - personal (optional): Set to "true" to show only personal (non-org) artists
  *
