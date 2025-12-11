@@ -5,19 +5,38 @@ import { generateApiKey } from "@/lib/keys/generateApiKey";
 import { hashApiKey } from "@/lib/keys/hashApiKey";
 import { insertApiKey } from "@/lib/supabase/account_api_keys/insertApiKey";
 import { PRIVY_PROJECT_SECRET } from "../const";
+import { getBearerToken } from "@/lib/auth/getBearerToken";
+import { getAccountIdByAuthToken } from "@/lib/privy/getAccountIdByAuthToken";
 
 /**
  * Handler for creating a new API key.
+ * Requires authentication via Bearer token in Authorization header.
  *
  * Body parameters:
  * - key_name (required): The name for the API key
- * - account_id (required): The account ID to associate the key with
  *
- * @param request - The request object containing the body with key_name and account_id.
+ * @param request - The request object containing the body with key_name.
  * @returns A NextResponse with the generated API key.
  */
 export async function createApiKeyHandler(request: NextRequest): Promise<NextResponse> {
   try {
+    const authHeader = request.headers.get("authorization");
+    const authToken = getBearerToken(authHeader);
+    if (!authToken) {
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "Authorization header with Bearer token required",
+        },
+        {
+          status: 401,
+          headers: getCorsHeaders(),
+        },
+      );
+    }
+
+    const accountId = await getAccountIdByAuthToken(authToken);
+
     const body = await request.json();
 
     const validatedBody = validateCreateApiKeyBody(body);
@@ -25,14 +44,14 @@ export async function createApiKeyHandler(request: NextRequest): Promise<NextRes
       return validatedBody;
     }
 
-    const { key_name, account_id } = validatedBody;
+    const { key_name } = validatedBody;
 
     const rawApiKey = generateApiKey("recoup_sk");
     const keyHash = hashApiKey(rawApiKey, PRIVY_PROJECT_SECRET);
 
     const { error } = await insertApiKey({
       name: key_name.trim(),
-      account: account_id,
+      account: accountId,
       key_hash: keyHash,
     });
 

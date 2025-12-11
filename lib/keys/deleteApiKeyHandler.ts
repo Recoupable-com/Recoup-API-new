@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCorsHeaders } from "@/lib/networking/getCorsHeaders";
 import { validateDeleteApiKeyBody } from "@/lib/keys/validateDeleteApiKeyBody";
 import { deleteApiKey } from "@/lib/supabase/account_api_keys/deleteApiKey";
+import { getBearerToken } from "@/lib/auth/getBearerToken";
+import { getAccountIdByAuthToken } from "@/lib/privy/getAccountIdByAuthToken";
+import { getApiKeys } from "@/lib/supabase/account_api_keys/getApiKeys";
 
 /**
  * Handler for deleting an API key.
+ * Requires authentication via Bearer token in Authorization header.
+ * Only allows deleting API keys that belong to the authenticated account.
  *
  * Body parameters:
  * - id (required): The ID of the API key to delete
@@ -14,11 +19,45 @@ import { deleteApiKey } from "@/lib/supabase/account_api_keys/deleteApiKey";
  */
 export async function deleteApiKeyHandler(request: NextRequest): Promise<NextResponse> {
   try {
+    const authHeader = request.headers.get("authorization");
+    const authToken = getBearerToken(authHeader);
+    if (!authToken) {
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "Authorization header with Bearer token required",
+        },
+        {
+          status: 401,
+          headers: getCorsHeaders(),
+        },
+      );
+    }
+
+    const accountId = await getAccountIdByAuthToken(authToken);
+
     const body = await request.json();
 
     const validatedBody = validateDeleteApiKeyBody(body);
     if (validatedBody instanceof NextResponse) {
       return validatedBody;
+    }
+
+    // Verify that the API key belongs to the authenticated account
+    const { data: apiKeys } = await getApiKeys(accountId);
+    const keyExists = apiKeys?.some(key => key.id === validatedBody.id);
+
+    if (!keyExists) {
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "API key not found or access denied",
+        },
+        {
+          status: 404,
+          headers: getCorsHeaders(),
+        },
+      );
     }
 
     const { error } = await deleteApiKey(validatedBody.id);
