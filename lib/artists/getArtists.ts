@@ -1,5 +1,5 @@
 import { getAccountArtistIds } from "@/lib/supabase/account_artist_ids/getAccountArtistIds";
-import { getUserPinnedArtistIds } from "@/lib/supabase/account_artist_ids/getUserPinnedArtistIds";
+import { getAccountPinnedArtistIds } from "@/lib/supabase/account_artist_ids/getAccountPinnedArtistIds";
 import { getAccountWorkspaceIds } from "@/lib/supabase/account_workspace_ids/getAccountWorkspaceIds";
 import { getAccountOrganizations } from "@/lib/supabase/account_organization_ids/getAccountOrganizations";
 import { getArtistsByOrganization } from "@/lib/supabase/artist_organization_ids/getArtistsByOrganization";
@@ -29,7 +29,7 @@ export async function getArtists(options: GetArtistsOptions): Promise<FormattedA
   if (orgId) {
     const [orgArtistsRaw, pinnedIds] = await Promise.all([
       getArtistsByOrganization([orgId]),
-      getUserPinnedArtistIds(accountId),
+      getAccountPinnedArtistIds(accountId),
     ]);
 
     // Format and deduplicate by artist_id, merge account's pinned preferences

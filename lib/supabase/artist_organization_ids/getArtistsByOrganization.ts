@@ -9,7 +9,8 @@ export type ArtistOrgRow = ArtistQueryRow & { artist_id: string };
  * Returns raw data - formatting should be done by caller.
  *
  * @param organizationIds - Array of organization IDs
- * @returns Array of raw artist rows from database
+ * @returns Array of raw artist rows from database (empty array if no results)
+ * @throws PostgrestError if the Supabase query fails
  */
 export async function getArtistsByOrganization(organizationIds: string[]): Promise<ArtistOrgRow[]> {
   if (!organizationIds || organizationIds.length === 0) return [];
@@ -32,7 +33,12 @@ export async function getArtistsByOrganization(organizationIds: string[]): Promi
     .in("organization_id", organizationIds);
 
   if (error) {
-    return [];
+    console.error("[ERROR] getArtistsByOrganization:", {
+      organizationIds,
+      error: error.message,
+      code: error.code,
+    });
+    throw error;
   }
 
   return (data || []) as ArtistOrgRow[];

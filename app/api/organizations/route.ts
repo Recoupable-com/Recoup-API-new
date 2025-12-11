@@ -18,10 +18,10 @@ export async function OPTIONS() {
 /**
  * GET /api/organizations
  *
- * Retrieves all organizations a user belongs to.
+ * Retrieves all organizations an account belongs to.
  *
  * Query parameters:
- * - accountId (required): The user's account ID (UUID)
+ * - accountId (required): The account's ID (UUID)
  *
  * @param request - The request object containing query parameters
  * @returns A NextResponse with organizations data

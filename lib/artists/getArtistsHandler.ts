@@ -7,7 +7,7 @@ import { getArtists } from "@/lib/artists/getArtists";
  * Handler for retrieving artists with organization filtering.
  *
  * Query parameters:
- * - accountId (required): The user's account ID
+ * - accountId (required): The account's ID
  * - orgId (optional): Filter to artists in a specific organization
  * - personal (optional): Set to "true" to show only personal (non-org) artists
  *

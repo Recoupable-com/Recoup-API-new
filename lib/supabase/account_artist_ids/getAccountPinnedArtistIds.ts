@@ -1,12 +1,12 @@
 import supabase from "../serverClient";
 
 /**
- * Get all artist IDs that a user has pinned.
+ * Get all artist IDs that an account has pinned.
  *
- * @param accountId - The user's account ID
- * @returns Set of artist IDs the user has pinned
+ * @param accountId - The account's ID
+ * @returns Set of artist IDs the account has pinned
  */
-export async function getUserPinnedArtistIds(accountId: string): Promise<Set<string>> {
+export async function getAccountPinnedArtistIds(accountId: string): Promise<Set<string>> {
   if (!accountId) return new Set();
 
   const { data, error } = await supabase
@@ -19,4 +19,3 @@ export async function getUserPinnedArtistIds(accountId: string): Promise<Set<str
 
   return new Set(data.map(row => row.artist_id));
 }
-

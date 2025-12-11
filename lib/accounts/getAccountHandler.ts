@@ -28,7 +28,7 @@ export async function getAccountHandler(
       return NextResponse.json(
         {
           status: "error",
-          message: "Account not found",
+          error: "Account not found",
         },
         {
           status: 404,
