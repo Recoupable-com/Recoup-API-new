@@ -4,7 +4,7 @@ import {
   getCatalogSongsQuerySchema,
   type GetCatalogSongsQuery,
 } from "@/lib/catalog/validateGetCatalogSongsQuery";
-import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
+import { getToolResultSuccess } from "@/lib/mcp/getToolResultSuccess";
 
 /**
  * Registers the "select_catalog_songs" tool on the MCP server.
@@ -42,7 +42,7 @@ export function registerGetCatalogSongsTool(server: McpServer): void {
         criteria: args.criteria,
       });
 
-      return getToolSuccessResponse(response);
+      return getToolResultSuccess(response);
     },
   );
 }

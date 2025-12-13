@@ -2,8 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import generateAccessToken from "@/lib/spotify/generateAccessToken";
 import getSearch from "@/lib/spotify/getSearch";
-import { getToolErrorResponse } from "@/lib/mcp/getToolErrorResponse";
-import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
+import { getToolResultError } from "@/lib/mcp/getToolResultError";
+import { getToolResultSuccess } from "@/lib/mcp/getToolResultSuccess";
 
 // Supported Spotify search types
 const SPOTIFY_TYPES = [
@@ -46,7 +46,7 @@ export function registerGetSpotifySearchTool(server: McpServer): void {
         const tokenResult = await generateAccessToken();
 
         if (!tokenResult || tokenResult.error || !tokenResult.access_token) {
-          return getToolErrorResponse("Failed to generate Spotify access token");
+          return getToolResultError("Failed to generate Spotify access token");
         }
 
         // Convert type array to comma-separated string for API
@@ -61,7 +61,7 @@ export function registerGetSpotifySearchTool(server: McpServer): void {
         });
 
         if (error || !data) {
-          return getToolErrorResponse(error?.message || "Failed to search Spotify");
+          return getToolResultError(error?.message || "Failed to search Spotify");
         }
 
         // Filter results to only include requested types (matching original tool behavior)
@@ -73,10 +73,10 @@ export function registerGetSpotifySearchTool(server: McpServer): void {
           }
         }
 
-        return getToolSuccessResponse(result);
+        return getToolResultSuccess(result);
       } catch (error) {
         console.error("Error searching Spotify:", error);
-        return getToolErrorResponse(
+        return getToolResultError(
           error instanceof Error ? error.message : "Failed to search Spotify",
         );
       }

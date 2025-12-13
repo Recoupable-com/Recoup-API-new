@@ -4,8 +4,7 @@ import {
   type GenerateAndProcessImageResult,
 } from "@/lib/image/generateAndProcessImage";
 import { editImageQuerySchema, type EditImageQuery } from "@/lib/image/validateEditImageQuery";
-import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
-import { CallToolResult } from "@/lib/mcp/getToolSuccessResponse";
+import { getToolResultSuccess, CallToolResult } from "@/lib/mcp/getToolResultSuccess";
 
 /**
  * Registers the "edit_image" tool on the MCP server.
@@ -32,7 +31,7 @@ export function registerEditImageTool(server: McpServer): void {
         ],
       );
 
-      return getToolSuccessResponse(result);
+      return getToolResultSuccess(result);
     },
   );
 }

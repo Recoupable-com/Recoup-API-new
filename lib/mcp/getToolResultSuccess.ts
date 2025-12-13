@@ -10,7 +10,7 @@ export type CallToolResult = {
  * @param data - The data to return
  * @returns An MCP tool response with success content
  */
-export function getToolSuccessResponse(data: unknown): CallToolResult {
+export function getToolResultSuccess(data: unknown): CallToolResult {
   return {
     content: [
       {

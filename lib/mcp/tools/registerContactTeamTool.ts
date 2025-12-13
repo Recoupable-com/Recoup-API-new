@@ -4,7 +4,7 @@ import {
   contactTeamQuerySchema,
   type ContactTeamQuery,
 } from "@/lib/contact/validateContactTeamQuery";
-import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
+import { getToolResultSuccess } from "@/lib/mcp/getToolResultSuccess";
 
 /**
  * Registers the "contact_team" tool on the MCP server.
@@ -22,7 +22,7 @@ export function registerContactTeamTool(server: McpServer): void {
     },
     async (args: ContactTeamQuery) => {
       const result = await contactTeam(args);
-      return getToolSuccessResponse(result);
+      return getToolResultSuccess(result);
     },
   );
 }

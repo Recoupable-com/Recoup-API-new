@@ -1,4 +1,4 @@
-import { CallToolResult } from "./getToolSuccessResponse";
+import { CallToolResult } from "./getToolResultSuccess";
 
 /**
  * Creates a standardized error response for MCP tools.
@@ -6,7 +6,7 @@ import { CallToolResult } from "./getToolSuccessResponse";
  * @param message - The error message to return
  * @returns An MCP tool response with error content
  */
-export function getToolErrorResponse(message: string): CallToolResult {
+export function getToolResultError(message: string): CallToolResult {
   return {
     content: [
       {

@@ -4,7 +4,7 @@ import {
   insertCatalogSongsQuerySchema,
   type InsertCatalogSongsQuery,
 } from "@/lib/catalog/validateInsertCatalogSongsQuery";
-import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
+import { getToolResultSuccess } from "@/lib/mcp/getToolResultSuccess";
 
 /**
  * Registers the "insert_catalog_songs" tool on the MCP server.
@@ -34,7 +34,7 @@ export function registerInsertCatalogSongsTool(server: McpServer): void {
     },
     async (args: InsertCatalogSongsQuery) => {
       const response = await insertCatalogSongsFunction(args.songs);
-      return getToolSuccessResponse(response);
+      return getToolResultSuccess(response);
     },
   );
 }

@@ -4,7 +4,7 @@ import {
   retrieveVideoQuerySchema,
   type RetrieveVideoQuery,
 } from "@/lib/video/validateRetrieveVideoQuery";
-import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
+import { getToolResultSuccess } from "@/lib/mcp/getToolResultSuccess";
 
 /**
  * Registers the "retrieve_sora_2_video" tool on the MCP server.
@@ -31,7 +31,7 @@ export function registerRetrieveVideoTool(server: McpServer): void {
     },
     async (args: RetrieveVideoQuery) => {
       const result = await retrieveVideoFunction(args);
-      return getToolSuccessResponse(result);
+      return getToolResultSuccess(result);
     },
   );
 }

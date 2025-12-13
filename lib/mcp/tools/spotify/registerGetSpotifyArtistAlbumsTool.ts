@@ -2,8 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import generateAccessToken from "@/lib/spotify/generateAccessToken";
 import getArtistAlbums from "@/lib/spotify/getArtistAlbums";
-import { getToolErrorResponse } from "@/lib/mcp/getToolErrorResponse";
-import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
+import { getToolResultError } from "@/lib/mcp/getToolResultError";
+import { getToolResultSuccess } from "@/lib/mcp/getToolResultSuccess";
 
 // Zod schema for the MCP tool - matches the original tool interface
 const getSpotifyArtistAlbumsSchema = z.object({
@@ -40,7 +40,7 @@ export function registerGetSpotifyArtistAlbumsTool(server: McpServer): void {
         const tokenResult = await generateAccessToken();
 
         if (!tokenResult || tokenResult.error || !tokenResult.access_token) {
-          return getToolErrorResponse("Failed to generate Spotify access token");
+          return getToolResultError("Failed to generate Spotify access token");
         }
 
         // Call Spotify API to get artist albums
@@ -54,14 +54,14 @@ export function registerGetSpotifyArtistAlbumsTool(server: McpServer): void {
         });
 
         if (error || !data) {
-          return getToolErrorResponse(error?.message || "Failed to fetch Spotify artist albums");
+          return getToolResultError(error?.message || "Failed to fetch Spotify artist albums");
         }
 
         // Return the data directly (Spotify API returns paginated album list)
-        return getToolSuccessResponse(data);
+        return getToolResultSuccess(data);
       } catch (error) {
         console.error("Error fetching Spotify artist albums:", error);
-        return getToolErrorResponse(
+        return getToolResultError(
           error instanceof Error ? error.message : "Failed to fetch Spotify artist albums",
         );
       }
