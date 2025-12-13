@@ -2,6 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import generateAccessToken from "@/lib/spotify/generateAccessToken";
 import getSearch from "@/lib/spotify/getSearch";
+import { getToolErrorResponse } from "@/lib/mcp/getToolErrorResponse";
+import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
 
 // Supported Spotify search types
 const SPOTIFY_TYPES = [
@@ -44,17 +46,7 @@ export function registerGetSpotifySearchTool(server: McpServer): void {
         const tokenResult = await generateAccessToken();
 
         if (!tokenResult || tokenResult.error || !tokenResult.access_token) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify({
-                  success: false,
-                  message: "Failed to generate Spotify access token",
-                }),
-              },
-            ],
-          };
+          return getToolErrorResponse("Failed to generate Spotify access token");
         }
 
         // Convert type array to comma-separated string for API
@@ -69,17 +61,7 @@ export function registerGetSpotifySearchTool(server: McpServer): void {
         });
 
         if (error || !data) {
-          return {
-            content: [
-              {
-                type: "text",
-                text: JSON.stringify({
-                  success: false,
-                  message: error?.message || "Failed to search Spotify",
-                }),
-              },
-            ],
-          };
+          return getToolErrorResponse(error?.message || "Failed to search Spotify");
         }
 
         // Filter results to only include requested types (matching original tool behavior)
@@ -91,27 +73,12 @@ export function registerGetSpotifySearchTool(server: McpServer): void {
           }
         }
 
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify(result),
-            },
-          ],
-        };
+        return getToolSuccessResponse(result);
       } catch (error) {
         console.error("Error searching Spotify:", error);
-        return {
-          content: [
-            {
-              type: "text",
-              text: JSON.stringify({
-                success: false,
-                message: error instanceof Error ? error.message : "Failed to search Spotify",
-              }),
-            },
-          ],
-        };
+        return getToolErrorResponse(
+          error instanceof Error ? error.message : "Failed to search Spotify",
+        );
       }
     },
   );

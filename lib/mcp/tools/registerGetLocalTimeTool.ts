@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getLocalTime } from "@/lib/time/getLocalTime";
 import { GetLocalTimeQuery, getLocalTimeQuerySchema } from "@/lib/time/validateGetLocalTimeQuery";
+import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
 
 /**
  * Registers the "get_local_time" tool on the MCP server.
@@ -18,7 +19,7 @@ export function registerGetLocalTimeTool(server: McpServer): void {
     },
     async (args: GetLocalTimeQuery) => {
       const result = await getLocalTime(args);
-      return { content: [{ type: "text", text: JSON.stringify(result) }] };
+      return getToolSuccessResponse(result);
     },
   );
 }

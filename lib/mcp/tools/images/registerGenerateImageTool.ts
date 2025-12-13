@@ -7,6 +7,7 @@ import {
   generateImageQuerySchema,
   type GenerateImageQuery,
 } from "@/lib/image/validateGenerateImageQuery";
+import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
 
 /**
  * Registers the "generate_image" tool on the MCP server.
@@ -27,14 +28,7 @@ export function registerGenerateImageTool(server: McpServer): void {
         args.account_id,
       );
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(result),
-          },
-        ],
-      };
+      return getToolSuccessResponse(result);
     },
   );
 }

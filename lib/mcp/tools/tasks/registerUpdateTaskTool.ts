@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { updateTask } from "@/lib/tasks/updateTask";
 import { updateTaskBodySchema, type UpdateTaskBody } from "@/lib/tasks/validateUpdateTaskBody";
+import { getToolSuccessResponse } from "@/lib/mcp/getToolSuccessResponse";
 
 /**
  * Registers the "update_task" tool on the MCP server.
@@ -19,14 +20,7 @@ Omitting a field leaves the existing value unchanged.`,
     },
     async (args: UpdateTaskBody) => {
       const result = await updateTask(args);
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(result),
-          },
-        ],
-      };
+      return getToolSuccessResponse(result);
     },
   );
 }
