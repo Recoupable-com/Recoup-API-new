@@ -22,6 +22,12 @@ export async function createOrgApiKeysHandler(
   if (membershipError) {
     return membershipError;
   }
+  console.log(
+    "Creating organization API key for account:",
+    accountId,
+    "and organization:",
+    organizationId,
+  );
 
   // Create key owned by the organization
   return createKey(organizationId, keyName);
