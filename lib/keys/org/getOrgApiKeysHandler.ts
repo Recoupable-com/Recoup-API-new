@@ -22,7 +22,7 @@ export async function getOrgApiKeysHandler(
     return membershipError;
   }
 
-  const { data, error } = await getApiKeys(organizationId);
+  const { data, error } = await getApiKeys({ accountId: organizationId });
 
   if (error) {
     console.error("Error fetching organization API keys:", error);

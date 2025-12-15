@@ -32,7 +32,7 @@ export async function getApiKeysHandler(request: NextRequest): Promise<NextRespo
     }
 
     // Default: fetch keys for the authenticated account
-    const { data, error } = await getApiKeys(accountId);
+    const { data, error } = await getApiKeys({ accountId });
 
     if (error) {
       console.error("Error fetching API keys:", error);
