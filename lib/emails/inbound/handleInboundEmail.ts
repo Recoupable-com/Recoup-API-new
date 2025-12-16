@@ -1,6 +1,5 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import type { ResendEmailReceivedEvent } from "@/lib/emails/validateInboundEmailEvent";
 import { validateInboundEmailEvent } from "@/lib/emails/validateInboundEmailEvent";
 import { respondToInboundEmail } from "@/lib/emails/inbound/respondToInboundEmail";
 
