@@ -1,7 +1,7 @@
 import { stepCountIs, ToolLoopAgent } from "ai";
 import { DEFAULT_MODEL } from "@/lib/const";
 import { RoutingDecision } from "@/lib/chat/types";
-import { extractImageUrlsFromMessages } from "@/lib/chat/extractImageUrlsFromMessages";
+import { extractImageUrlsFromMessages } from "@/lib/messages/extractImageUrlsFromMessages";
 import { buildSystemPromptWithImages } from "@/lib/chat/buildSystemPromptWithImages";
 import { getSystemPrompt } from "@/lib/prompts/getSystemPrompt";
 import { setupToolsForRequest } from "@/lib/chat/setupToolsForRequest";
