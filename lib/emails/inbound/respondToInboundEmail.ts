@@ -35,7 +35,7 @@ export async function respondToInboundEmail(
       from: "hi@recoupable.com",
       to: toArray,
       subject,
-      html: `<p>Thanks for your email!</p><p>account_id: ${accountId}</p><p>${chatResponse.content}</p>`,
+      html: `<p>Thanks for your email!</p><p>account_id: ${accountId}</p><p>${chatResponse.text}</p>`,
       headers: {
         "In-Reply-To": messageId,
       },
