@@ -19,24 +19,15 @@ export async function respondToInboundEmail(
     const messageId = original.message_id;
     const toArray = [original.from];
 
-    // Lookup account ID in Supabase using the sender's email address
-    let accountId: string | null = null;
-    try {
-      const accountEmails = await selectAccountEmails({ emails: [original.from] });
-      if (accountEmails.length > 0) {
-        accountId = accountEmails[0].account_id ?? null;
-      }
-    } catch (lookupError) {
-      console.error("[respondToInboundEmail] Error looking up account_emails:", lookupError);
-    }
-
-    const accountIdText = accountId ?? "Unknown";
+    const accountEmails = await selectAccountEmails({ emails: [original.from] });
+    if (accountEmails.length === 0) throw new Error("Account not found");
+    const accountId = accountEmails[0].account_id;
 
     const payload = {
       from: "hi@recoupable.com",
       to: toArray,
       subject,
-      html: `<p>Thanks for your email!</p><p>account_id: ${accountIdText}</p>`,
+      html: `<p>Thanks for your email!</p><p>account_id: ${accountId}</p>`,
       headers: {
         "In-Reply-To": messageId,
       },
