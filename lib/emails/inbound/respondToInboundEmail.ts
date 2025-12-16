@@ -17,9 +17,10 @@ export async function respondToInboundEmail(
     const original = event.data;
     const subject = original.subject ? `Re: ${original.subject}` : "Re: Your email";
     const messageId = original.message_id;
-    const toArray = [original.from];
+    const from = original.from;
+    const toArray = [from];
 
-    const accountEmails = await selectAccountEmails({ emails: [original.from] });
+    const accountEmails = await selectAccountEmails({ emails: [from] });
     if (accountEmails.length === 0) throw new Error("Account not found");
     const accountId = accountEmails[0].account_id;
 
