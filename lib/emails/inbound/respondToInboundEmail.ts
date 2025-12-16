@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import type { ResendEmailReceivedEvent } from "@/lib/emails/validateInboundEmailEvent";
 import { sendEmailWithResend } from "@/lib/emails/sendEmail";
 import selectAccountEmails from "@/lib/supabase/account_emails/selectAccountEmails";
-import { setupChatRequest } from "@/lib/chat/setupChatRequest";
 import { getMessages } from "@/lib/messages/getMessages";
+import getGeneralAgent from "@/lib/agents/generalAgent/getGeneralAgent";
 
 /**
  * Responds to an inbound email by sending a hard-coded reply in the same thread.
@@ -25,9 +25,8 @@ export async function respondToInboundEmail(
     const accountEmails = await selectAccountEmails({ emails: [from] });
     if (accountEmails.length === 0) throw new Error("Account not found");
     const accountId = accountEmails[0].account_id;
-
-    const chatRequest = await setupChatRequest({ accountId, messages: getMessages("hello world") });
-    const agent = chatRequest.agent;
+    const decision = await getGeneralAgent({ accountId, messages: getMessages("hello world") });
+    const agent = decision.agent;
     const chatResponse = await agent.generate({
       prompt: "hello world",
     });
