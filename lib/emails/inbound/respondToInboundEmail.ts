@@ -4,6 +4,7 @@ import { sendEmailWithResend } from "@/lib/emails/sendEmail";
 import selectAccountEmails from "@/lib/supabase/account_emails/selectAccountEmails";
 import { getMessages } from "@/lib/messages/getMessages";
 import getGeneralAgent from "@/lib/agents/generalAgent/getGeneralAgent";
+import { getResendClient } from "@/lib/emails/client";
 
 /**
  * Responds to an inbound email by sending a hard-coded reply in the same thread.
@@ -22,13 +23,26 @@ export async function respondToInboundEmail(
     const from = original.from;
     const toArray = [from];
 
+    // Fetch the email content from Resend API
+    const resend = getResendClient();
+    const { data: emailContent } = await resend.emails.receiving.get(original.email_id);
+
+    if (!emailContent) {
+      throw new Error("Failed to fetch email content from Resend");
+    }
+
+    // Extract text or HTML content, preferring text for cleaner processing
+    const emailText = emailContent.text || emailContent.html || "";
+
     const accountEmails = await selectAccountEmails({ emails: [from] });
     if (accountEmails.length === 0) throw new Error("Account not found");
     const accountId = accountEmails[0].account_id;
-    const decision = await getGeneralAgent({ accountId, messages: getMessages("hello world") });
+
+    // Pass the email content to the agent
+    const decision = await getGeneralAgent({ accountId, messages: getMessages(emailText) });
     const agent = decision.agent;
     const chatResponse = await agent.generate({
-      prompt: "hello world",
+      prompt: emailText,
     });
     const payload = {
       from: "hi@recoupable.com",
