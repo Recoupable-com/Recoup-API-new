@@ -4,7 +4,7 @@ import { sendEmailWithResend } from "@/lib/emails/sendEmail";
 import selectAccountEmails from "@/lib/supabase/account_emails/selectAccountEmails";
 import { getMessages } from "@/lib/messages/getMessages";
 import getGeneralAgent from "@/lib/agents/generalAgent/getGeneralAgent";
-import { getResendClient } from "@/lib/emails/client";
+import { getEmailContent } from "@/lib/emails/inbound/getEmailContent";
 
 /**
  * Responds to an inbound email by sending a hard-coded reply in the same thread.
@@ -18,21 +18,13 @@ export async function respondToInboundEmail(
 ): Promise<NextResponse> {
   try {
     const original = event.data;
-    const subject = original.subject ? `Re: ${original.subject}` : "Re: Your email";
+    const subject = `Re: ${original.subject}`;
     const messageId = original.message_id;
+    const emailId = original.email_id;
     const from = original.from;
     const toArray = [from];
 
-    // Fetch the email content from Resend API
-    const resend = getResendClient();
-    const { data: emailContent } = await resend.emails.receiving.get(original.email_id);
-
-    if (!emailContent) {
-      throw new Error("Failed to fetch email content from Resend");
-    }
-
-    // Extract text or HTML content, preferring text for cleaner processing
-    const emailText = emailContent.text || emailContent.html || "";
+    const emailText = await getEmailContent(emailId);
 
     const accountEmails = await selectAccountEmails({ emails: [from] });
     if (accountEmails.length === 0) throw new Error("Account not found");
@@ -48,7 +40,7 @@ export async function respondToInboundEmail(
       from: "hi@recoupable.com",
       to: toArray,
       subject,
-      html: `<p>Thanks for your email!</p><p>account_id: ${accountId}</p><p>${chatResponse.text}</p>`,
+      html: `<p>${chatResponse.text}</p>`,
       headers: {
         "In-Reply-To": messageId,
       },
