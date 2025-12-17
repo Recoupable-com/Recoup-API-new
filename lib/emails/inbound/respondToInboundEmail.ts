@@ -5,6 +5,7 @@ import selectAccountEmails from "@/lib/supabase/account_emails/selectAccountEmai
 import { getMessages } from "@/lib/messages/getMessages";
 import getGeneralAgent from "@/lib/agents/generalAgent/getGeneralAgent";
 import { getEmailContent } from "@/lib/emails/inbound/getEmailContent";
+import { getFromWithName } from "@/lib/emails/inbound/getFromWithName";
 
 /**
  * Responds to an inbound email by sending a hard-coded reply in the same thread.
@@ -21,12 +22,13 @@ export async function respondToInboundEmail(
     const subject = original.subject ? `Re: ${original.subject}` : "Re: Your email";
     const messageId = original.message_id;
     const emailId = original.email_id;
-    const from = original.from;
-    const toArray = [from];
+    const to = original.from;
+    const toArray = [to];
+    const from = getFromWithName(original.to);
 
     const emailText = await getEmailContent(emailId);
 
-    const accountEmails = await selectAccountEmails({ emails: [from] });
+    const accountEmails = await selectAccountEmails({ emails: [to] });
     if (accountEmails.length === 0) throw new Error("Account not found");
     const accountId = accountEmails[0].account_id;
 
@@ -36,7 +38,7 @@ export async function respondToInboundEmail(
       prompt: emailText,
     });
     const payload = {
-      from: "hi@recoupable.com",
+      from,
       to: toArray,
       subject,
       html: `<p>${chatResponse.text}</p>`,
