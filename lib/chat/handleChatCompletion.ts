@@ -26,7 +26,6 @@ export async function handleChatCompletion(
   try {
     const { messages, roomId = generateUUID(), accountId, artistId } = body;
 
-    console.log("roomId", roomId);
     let email = "";
     const accountEmails = await selectAccountEmails({ accountIds: accountId });
     if (accountEmails.length > 0 && accountEmails[0].email) {
