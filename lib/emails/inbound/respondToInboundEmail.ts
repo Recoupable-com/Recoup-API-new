@@ -54,6 +54,9 @@ export async function respondToInboundEmail(
     };
 
     const result = await sendEmailWithResend(payload);
+    if (result instanceof NextResponse) {
+      return result;
+    }
     console.log("result", result);
 
     const memories = await handleChatCompletion(
