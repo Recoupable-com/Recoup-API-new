@@ -7,6 +7,7 @@ import getGeneralAgent from "@/lib/agents/generalAgent/getGeneralAgent";
 import { getEmailContent } from "@/lib/emails/inbound/getEmailContent";
 import { getFromWithName } from "@/lib/emails/inbound/getFromWithName";
 import { getEmailRoomId } from "@/lib/emails/inbound/getEmailRoomId";
+import { getEmailRoomMessages } from "@/lib/emails/inbound/getEmailRoomMessages";
 import { handleChatCompletion } from "@/lib/chat/handleChatCompletion";
 import { ChatRequestBody } from "@/lib/chat/validateChatRequest";
 import insertMemoryEmail from "@/lib/supabase/memory_emails/insertMemoryEmail";
@@ -45,8 +46,11 @@ export async function respondToInboundEmail(
     };
     const decision = await getGeneralAgent(chatRequestBody);
     const agent = decision.agent;
+
+    const messages = await getEmailRoomMessages(roomId, emailText);
+
     const chatResponse = await agent.generate({
-      prompt: emailText,
+      messages,
     });
     const payload = {
       from,
