@@ -33,5 +33,6 @@ export async function getEmailRoomMessages(
     content: [{ type: "text", text: emailText }],
   } as ModelMessage);
 
+  console.log("[getEmailRoomMessages] Messages:", messages);
   return messages;
 }
