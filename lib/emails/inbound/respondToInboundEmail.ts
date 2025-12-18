@@ -34,8 +34,8 @@ export async function respondToInboundEmail(
     const accountEmails = await selectAccountEmails({ emails: [to] });
     if (accountEmails.length === 0) throw new Error("Account not found");
     const accountId = accountEmails[0].account_id;
-
-    const decision = await getGeneralAgent({ accountId, messages: getMessages(emailText) });
+    const chatRequestBody = { accountId, messages: getMessages(emailText) };
+    const decision = await getGeneralAgent(chatRequestBody);
     const agent = decision.agent;
     const chatResponse = await agent.generate({
       prompt: emailText,
@@ -44,7 +44,7 @@ export async function respondToInboundEmail(
       from,
       to: toArray,
       subject,
-      html: `<p>${chatResponse.text}</p>`,
+      html: chatResponse.text,
       headers: {
         "In-Reply-To": messageId,
       },
@@ -52,19 +52,7 @@ export async function respondToInboundEmail(
 
     const result = await sendEmailWithResend(payload);
 
-    // Fire-and-forget: persist this email interaction as a chat conversation
-    try {
-      await handleChatCompletion(
-        {
-          accountId,
-          roomId: messageId,
-          messages: getMessages(emailText),
-        },
-        getMessages(chatResponse.text),
-      );
-    } catch (loggingError) {
-      console.error("[respondToInboundEmail] Failed to persist chat completion", loggingError);
-    }
+    await handleChatCompletion(chatRequestBody, getMessages(chatResponse.text));
 
     if (result instanceof NextResponse) {
       return result;
