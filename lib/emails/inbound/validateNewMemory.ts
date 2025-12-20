@@ -9,6 +9,7 @@ import insertMemories from "@/lib/supabase/memories/insertMemories";
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
 import { createNewRoom } from "@/lib/chat/createNewRoom";
 import { generateUUID } from "@/lib/uuid/generateUUID";
+import insertMemoryEmail from "@/lib/supabase/memory_emails/insertMemoryEmail";
 
 /**
  * Validates and processes a new memory from an inbound email.
@@ -64,6 +65,16 @@ export async function validateNewMemory(
     }
     throw error;
   }
+
+  // Link the inbound email with the prompt message memory (using emailId as the memory id)
+  // The user message was already inserted with emailId as the id, so we use that directly
+  const messageId = original.message_id;
+  await insertMemoryEmail({
+    email_id: emailId,
+    memory: emailId,
+    message_id: messageId,
+    created_at: original.created_at,
+  });
 
   // Initialize chat request body
   const chatRequestBody: ChatRequestBody = {

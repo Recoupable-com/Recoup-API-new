@@ -5,7 +5,6 @@ import { getMessages } from "@/lib/messages/getMessages";
 import getGeneralAgent from "@/lib/agents/generalAgent/getGeneralAgent";
 import { getFromWithName } from "@/lib/emails/inbound/getFromWithName";
 import { getEmailRoomMessages } from "@/lib/emails/inbound/getEmailRoomMessages";
-import insertMemoryEmail from "@/lib/supabase/memory_emails/insertMemoryEmail";
 import insertMemories from "@/lib/supabase/memories/insertMemories";
 import filterMessageContentForMemories from "@/lib/messages/filterMessageContentForMemories";
 import { validateNewMemory } from "@/lib/emails/inbound/validateNewMemory";
@@ -24,7 +23,6 @@ export async function respondToInboundEmail(
     const original = event.data;
     const subject = original.subject ? `Re: ${original.subject}` : "Re: Your email";
     const messageId = original.message_id;
-    const emailId = original.email_id;
     const to = original.from;
     const toArray = [to];
     const from = getFromWithName(original.to);
@@ -64,15 +62,6 @@ export async function respondToInboundEmail(
       id: assistantMessage.id,
       room_id: roomId,
       content: filterMessageContentForMemories(assistantMessage),
-    });
-
-    // Link the inbound email with the prompt message memory (using emailId as the memory id)
-    // The user message was already inserted with emailId as the id, so we use that directly
-    await insertMemoryEmail({
-      email_id: emailId,
-      memory: emailId,
-      message_id: messageId,
-      created_at: original.created_at,
     });
 
     if (result instanceof NextResponse) {
