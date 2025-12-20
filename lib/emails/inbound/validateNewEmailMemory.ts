@@ -25,16 +25,13 @@ export async function validateNewEmailMemory(
   const emailId = original.email_id;
   const to = original.from;
 
-  // Get account information
   const accountEmails = await selectAccountEmails({ emails: [to] });
   if (accountEmails.length === 0) throw new Error("Account not found");
   const accountId = accountEmails[0].account_id;
 
-  // Get email content
   const emailContent = await getEmailContent(emailId);
   const emailText = emailContent.text || emailContent.html || "";
 
-  // Get or create room
   const roomId = await getEmailRoomId(emailContent);
   const finalRoomId = roomId || generateUUID();
   const promptMessage = getMessages(emailText)[0];
@@ -76,7 +73,6 @@ export async function validateNewEmailMemory(
     created_at: original.created_at,
   });
 
-  // Initialize chat request body
   const chatRequestBody: ChatRequestBody = {
     accountId,
     messages: getMessages(emailText),
