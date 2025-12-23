@@ -10,6 +10,7 @@ import filterMessageContentForMemories from "@/lib/messages/filterMessageContent
 import { createNewRoom } from "@/lib/chat/createNewRoom";
 import { generateUUID } from "@/lib/uuid/generateUUID";
 import insertMemoryEmail from "@/lib/supabase/memory_emails/insertMemoryEmail";
+import { trimRepliedContext } from "@/lib/emails/inbound/trimRepliedContext";
 
 /**
  * Validates and processes a new memory from an inbound email.
@@ -30,7 +31,7 @@ export async function validateNewEmailMemory(
   const accountId = accountEmails[0].account_id;
 
   const emailContent = await getEmailContent(emailId);
-  const emailText = emailContent.text || emailContent.html || "";
+  const emailText = trimRepliedContext(emailContent.html || "");
 
   const roomId = await getEmailRoomId(emailContent);
   const finalRoomId = roomId || generateUUID();
